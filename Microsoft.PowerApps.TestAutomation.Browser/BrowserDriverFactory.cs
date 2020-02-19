@@ -20,7 +20,7 @@ namespace Microsoft.PowerApps.TestAutomation.Browser
             switch (options.BrowserType)
             {
                 case BrowserType.Chrome:
-                    var chromeService = ChromeDriverService.CreateDefaultService();
+                    var chromeService = ChromeDriverService.CreateDefaultService(options.DriversPath);
                     chromeService.HideCommandPromptWindow = options.HideDiagnosticWindow;
                     driver = new ChromeDriver(chromeService, options.ToChrome());
                     break;

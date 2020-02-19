@@ -14,7 +14,7 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
         public TestContext TestContext { get; set; }
         private static TestContext _testContext;
         private static BrowserType Type;
-        //private static string DriversPath;
+        private static string DriversPath;
         private static bool? UsePrivateMode;
 
        [ClassInitialize]
@@ -22,7 +22,7 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
         {
             _testContext = TestContext;
             Type = (BrowserType)Enum.Parse(typeof(BrowserType), _testContext.Properties["BrowserType"].ToString());
-            //DriversPath = _testContext.Properties["DriversPath"].ToString();
+            DriversPath = _testContext.Properties["DriversPath"].ToString();
             UsePrivateMode = Convert.ToBoolean(_testContext.Properties["UsePrivateMode"].ToString());
         }
 
