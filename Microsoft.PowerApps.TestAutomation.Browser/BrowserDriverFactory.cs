@@ -24,11 +24,6 @@ namespace Microsoft.PowerApps.TestAutomation.Browser
                     chromeService.HideCommandPromptWindow = options.HideDiagnosticWindow;
                     driver = new ChromeDriver(chromeService, options.ToChrome());
                     break;
-                case BrowserType.IE:
-                    var ieService = InternetExplorerDriverService.CreateDefaultService(options.DriversPath);
-                    ieService.SuppressInitialDiagnosticInformation = options.HideDiagnosticWindow;
-                    driver = new InternetExplorerDriver(ieService, options.ToInternetExplorer(), TimeSpan.FromMinutes(20));
-                    break;
                 case BrowserType.Firefox:
                     var ffService = FirefoxDriverService.CreateDefaultService(options.DriversPath);
                     ffService.HideCommandPromptWindow = options.HideDiagnosticWindow;
