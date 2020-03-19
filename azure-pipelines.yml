@@ -1,0 +1,126 @@
+# Build and Test Power Apps Canvas App Test Studio TestCases or TestSuites
+
+
+pool:
+
+  name: Hosted Windows 2019 with VS2019
+
+  demands:
+
+  - msbuild
+
+  - visualstudio
+
+  - vstest
+
+
+variables:
+
+  BrowserTypeFirefox: 'Firefox'
+  BrowserTypeChrome: 'Chrome'
+  OnlineUrl: 'https://make.powerapps.com'
+  TestAutomationURLFilePath: '$(Build.SourcesDirectory)\PowerAppsTestAutomationTestURLs.json'
+  UsePrivateMode: 'true'
+
+
+
+steps:
+
+- powershell: |
+   # Set agent screen resolution to 1920x1080 to avoid sizing issues with Portal
+   Set-DisplayResolution -Width 1920 -Height 1080 -Force
+   
+   # Wait 10 seconds
+   Start-Sleep -s 10
+   
+   # Verify Screen Resolution is set to 1920x1080
+   Get-DisplayResolution
+
+  ignoreLASTEXITCODE: true
+
+  displayName: 'Set Agent Screen Resolution to 1920x1080'
+
+
+
+- task: NuGetCommand@2
+
+  displayName: 'Restore NuGet Packages'
+
+  inputs:
+
+    restoreSolution: PowerAppsTestAutomation.sln
+
+
+
+- powershell: |
+   $configPath ="$(TestAutomationURLFilePath)"
+
+   # Comma separated list of 'TestSuite' or 'TestCase' URLs ('URL1', 'URL2', 'URL3')
+   $testUrls = @('') 
+   
+   $testUrlJsonBase = @{}
+   $testUrlList = New-Object System.Collections.ArrayList
+   
+   foreach($url in $testUrls)
+   {
+      $testUrlList.Add($url)
+   }
+   
+   $testUrlJsonBase.Add("TestURLs", $testUrlList)
+   
+   $urlConfigJson = $testUrlJsonBase | ConvertTo-Json
+   $urlConfigJson | Out-File $configPath -Force
+   
+   Get-Content "$(TestAutomationURLFilePath)" | foreach {Write-Output $_}
+
+  displayName: 'Create JSON File with TestURLs'
+
+
+
+- task: VSBuild@1
+
+  displayName: 'Build Power Apps Test Automation Solution'
+
+
+
+- task: VSTest@2
+
+  displayName: 'Run Power Apps Test Automation Tests via $(BrowserTypeChrome)'
+
+  inputs:
+
+    testAssemblyVer2: '**\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
+
+    testFiltercriteria: 'TestCategory=PowerAppsTestAutomation'
+
+    uiTests: true
+
+    runSettingsFile: Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings
+
+    overrideTestrunParameters: '-OnlineUsername $(OnlineUsername) -OnlinePassword $(OnlinePassword) -BrowserType $(BrowserTypeChrome) -OnlineUrl $(OnlineUrl) -UsePrivateMode $(UsePrivateMode) -TestAutomationURLFilePath $(TestAutomationURLFilePath) -DriversPath $(ChromeWebDriver)'
+
+    testRunTitle: 'Run Power Apps Test Automation Tests via $(BrowserTypeChrome)'
+
+  continueOnError: true
+
+
+
+- task: VSTest@2
+
+  displayName: 'Run Power Apps Test Automation Tests via $(BrowserTypeFirefox)'
+
+  inputs:
+
+    testAssemblyVer2: '**\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
+
+    testFiltercriteria: 'TestCategory=PowerAppsTestAutomation'
+
+    uiTests: true
+
+    runSettingsFile: Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings
+
+    overrideTestrunParameters: '-OnlineUsername $(OnlineUsername) -OnlinePassword $(OnlinePassword) -BrowserType $(BrowserTypeFirefox) -OnlineUrl $(OnlineUrl) -UsePrivateMode $(UsePrivateMode) -TestAutomationURLFilePath $(TestAutomationURLFilePath) -DriversPath $(GeckoWebDriver)'
+
+    testRunTitle: 'Run Power Apps Test Automation Tests via $(BrowserTypeFirefox)'
+
+  continueOnError: true
