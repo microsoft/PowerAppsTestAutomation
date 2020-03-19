@@ -88,11 +88,11 @@ namespace Microsoft.PowerApps.TestAutomation.Api
         private LoginResult Login(IWebDriver driver, Uri uri, SecureString username, SecureString password, Action<LoginRedirectEventArgs> redirectAction)
         {
             var redirect = false;
-            bool online = !(this.OnlineDomains != null && !this.OnlineDomains.Any(d => uri.Host.EndsWith(d)));
+            // bool online = !(this.OnlineDomains != null && !this.OnlineDomains.Any(d => uri.Host.EndsWith(d)));
             driver.Navigate().GoToUrl(uri);
 
-            if (online)
-            {
+            // if (online)
+            // {
                 if (driver.IsVisible(By.Id("use_another_account_link")))
                     driver.ClickWhenAvailable(By.Id("use_another_account_link"));
 
@@ -189,7 +189,7 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                             throw new Exception("Login page failed.");
                         });
                 }
-            }
+            // }
 
             return redirect ? LoginResult.Redirect : LoginResult.Success;
         }
