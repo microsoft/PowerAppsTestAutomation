@@ -131,7 +131,7 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
                         // Execute TestAutomation and return JSON result object
                         testAutomationResults = appBrowser.TestAutomation.ExecuteTestAutomation(_testAutomationUri, testRunCounter, _testMaxWaitTimeInSeconds);
 
-                        #if (DEBUG)    
+                        #if DEBUG    
                         // Only output post execution screenshot in debug mode
                         _resultsDirectory = TestContext.TestResultsDirectory;
                         string location1 = $@"{_resultsDirectory}\TestRun{testRunCounter}-PostExecutionScreenshot.jpeg";
