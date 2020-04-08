@@ -32,7 +32,7 @@ steps:
 
       inputs:
 
-        restoreSolution: PowerAppsTestAutomation.sln
+        restoreSolution: PowerAppsTestAutomation/PowerAppsTestAutomation.sln
 
 
 
@@ -67,7 +67,7 @@ steps:
 
       inputs:
 
-        solution: PowerAppsTestAutomation.sln
+        solution: PowerAppsTestAutomation/PowerAppsTestAutomation.sln
 
 
 
