@@ -9,6 +9,7 @@ parameters:
     TestAutomationURLFilePath: ''
     UsePrivateMode: ''
     TestURLs: ''
+    RepositoryName: 'PowerAppsTestAutomation'
 
 steps:
     - powershell: |
@@ -32,7 +33,7 @@ steps:
 
       inputs:
 
-        restoreSolution: PowerAppsTestAutomation/PowerAppsTestAutomation.sln
+        restoreSolution: '${{parameters.RepositoryName}}/PowerAppsTestAutomation.sln'
 
 
 
@@ -67,7 +68,7 @@ steps:
 
       inputs:
 
-        solution: PowerAppsTestAutomation/PowerAppsTestAutomation.sln
+        solution: '${{parameters.RepositoryName}}/PowerAppsTestAutomation.sln'
 
 
 
@@ -77,13 +78,13 @@ steps:
 
       inputs:
 
-        testAssemblyVer2: '**\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
+        testAssemblyVer2: '**\${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
 
         testFiltercriteria: 'TestCategory=PowerAppsTestAutomation'
 
         uiTests: true
 
-        runSettingsFile: Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings
+        runSettingsFile: '**\${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings'
 
         overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType ${{ parameters.BrowserTypeChrome }} -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(ChromeWebDriver)'
 
@@ -99,13 +100,13 @@ steps:
 
       inputs:
 
-        testAssemblyVer2: '**\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
+        testAssemblyVer2: '**\${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
 
         testFiltercriteria: 'TestCategory=PowerAppsTestAutomation'
 
         uiTests: true
 
-        runSettingsFile: Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings
+        runSettingsFile: '**\${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings'
 
         overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType ${{ parameters.BrowserTypeFirefox }} -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(GeckoWebDriver)'
 
