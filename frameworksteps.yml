@@ -47,7 +47,7 @@ steps:
 
     - task: VSTest@2
 
-      displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }})'
+      displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }}'
 
       inputs:
 
