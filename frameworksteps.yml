@@ -8,7 +8,6 @@ parameters:
     OnlineUrl: ''
     TestAutomationURLFilePath: ''
     UsePrivateMode: ''
-    TestURLs: ''
     RepositoryName: 'PowerAppsTestAutomation'
 
 steps:
@@ -34,32 +33,6 @@ steps:
       inputs:
 
         restoreSolution: '${{parameters.RepositoryName}}/PowerAppsTestAutomation.sln'
-
-
-
-    - powershell: |
-       $configPath = "${{ parameters.TestAutomationURLFilePath }}"
-
-       # Comma separated list of 'TestSuite' or 'TestCase' URLs ('URL1', 'URL2', 'URL3')
-       $testUrls = @("${{ parameters.TestURLs }}") 
-   
-       $testUrlJsonBase = @{}
-       $testUrlList = New-Object System.Collections.ArrayList
-   
-       foreach($url in $testUrls)
-       {
-          $testUrlList.Add($url)
-       }
-   
-       $testUrlJsonBase.Add("TestURLs", $testUrlList)
-   
-       $urlConfigJson = $testUrlJsonBase | ConvertTo-Json
-       $urlConfigJson | Out-File $configPath -Force
-   
-       Get-Content $configPath | foreach {Write-Output $_}
-
-      displayName: 'Create JSON File with TestURLs'
-
 
 
     - task: VSBuild@1
