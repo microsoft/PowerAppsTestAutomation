@@ -51,6 +51,9 @@ namespace Microsoft.PowerApps.TestAutomation.Api
         {
             return this.Execute(GetOptions("Get List of Test URLs"), driver =>
             {
+                //Trim encoded characters (%20) if present
+                filePath = filePath.Trim();
+
                 // Initialize list of URLs
                 List<Uri> testUrlList = new List<Uri>();
 
