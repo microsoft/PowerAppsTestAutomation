@@ -47,7 +47,7 @@ steps:
     - task: VSTest@2
 
       displayName: 'Run Power Apps Test Automation Tests via Chrome'
-      condition: or(eq(variables['BrowserType'], 'Chrome'), eq(variables['BrowserType'], 'All'))
+      condition: or(eq('${{ parameters.BrowserType }}', 'Chrome'), eq('${{ parameters.BrowserType }}', 'All'))
       inputs:
 
         testAssemblyVer2: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
@@ -69,7 +69,7 @@ steps:
     - task: VSTest@2
 
       displayName: 'Run Power Apps Test Automation Tests via Firefox'
-      condition: or(eq(variables['BrowserType'], 'Firefox'), eq(variables['BrowserType'], 'All'))
+      condition: or(eq('${{ parameters.BrowserType }}', 'Firefox'), eq('${{ parameters.BrowserType }}', 'All'))
       inputs:
 
         testAssemblyVer2: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
