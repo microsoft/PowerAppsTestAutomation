@@ -46,7 +46,7 @@ steps:
 
     - task: VSTest@2
 
-      displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }}'
+      displayName: 'Run Power Apps Test Automation Tests via Chrome'
       condition: or(eq(variables['BrowserType'], 'Chrome'), eq(variables['BrowserType'], 'All'))
       inputs:
 
@@ -60,7 +60,7 @@ steps:
 
         overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Chrome" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(ChromeWebDriver)'
 
-        testRunTitle: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }}'
+        testRunTitle: 'Run Power Apps Test Automation Tests via Chrome'
 
       continueOnError: true
 
@@ -68,7 +68,7 @@ steps:
 
     - task: VSTest@2
 
-      displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeFirefox }}'
+      displayName: 'Run Power Apps Test Automation Tests via Firefox'
       condition: or(eq(variables['BrowserType'], 'Firefox'), eq(variables['BrowserType'], 'All'))
       inputs:
 
@@ -82,6 +82,6 @@ steps:
 
         overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Firefox" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(GeckoWebDriver)'
 
-        testRunTitle: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeFirefox }}'
+        testRunTitle: 'Run Power Apps Test Automation Tests via Firefox'
 
       continueOnError: true
