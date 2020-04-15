@@ -3,8 +3,7 @@
 parameters:
     OnlineUsername: ''
     OnlinePassword: ''
-    BrowserTypeFirefox: ''
-    BrowserTypeChrome: ''
+    BrowserType: ''
     OnlineUrl: ''
     TestAutomationURLFilePath: ''
     UsePrivateMode: ''
@@ -48,7 +47,7 @@ steps:
     - task: VSTest@2
 
       displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }}'
-
+      condition: or(eq(variables['BrowserType'], 'Chrome'), eq(variables['BrowserType'], 'All'))
       inputs:
 
         testAssemblyVer2: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
@@ -70,7 +69,7 @@ steps:
     - task: VSTest@2
 
       displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeFirefox }}'
-
+      condition: or(eq(variables['BrowserType'], 'Firefox'), eq(variables['BrowserType'], 'All'))
       inputs:
 
         testAssemblyVer2: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
