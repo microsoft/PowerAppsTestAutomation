@@ -1,0 +1,69 @@
+# File: azure-pipelines.yml
+# Build Name / Format
+name: PowerAppsTestAutomation-$(date:yyyyMMdd)$(rev:.r)
+
+resources:
+  repositories:
+    - repository: PowerAppsTestAutomation
+      type: github
+      # GitHub Repo(e.g. <FORK>/PowerAppsTestAutomation)
+      # Recommended to Fork or Duplicate if custom auth flows are required
+      name: microsoft/PowerAppsTestAutomation
+      ref: master
+      # Name of the GitHub OAuth ADO Service Connection
+      endpoint: <ADO GitHub OAuth Service Connection Name>
+
+parameters:
+ - name: image
+   displayName: Pool Image
+   type: string
+   # See https://github.com/MicrosoftDocs/azure-devops-docs/blob/master/docs/pipelines/agents/hosted.md#use-a-microsoft-hosted-agent for more pool types
+   default: windows-latest
+   values:
+   - windows-latest
+   - vs2017-win2016
+   - windows-2019
+ - name: BrowserType
+   displayName: Browser Type
+   type: string
+   default: All
+   values:
+   - Chrome
+   - Firefox
+   - All
+
+jobs:
+- job: "PowerAppsTestFrameworkAutomation"
+  pool:
+    vmImage: ${{ parameters.image }}
+    demands:
+    - msbuild
+    - visualstudio
+    - vstest
+  variables:
+  - name: PortalUrl
+    value: https://make.powerapps.com
+    # Browser PrivateMode usage (true/false)
+  - name: PrivateMode
+    value: true
+    # FileName where TestAutomationURLs are stored in JSON format
+  - name: TestUrlFileName 
+    value: TestAutomationURLs.json
+    # Project name of repo containing TestAutomationURLs (spaces should be encoded as %20)
+    # Example: Contoso Test Framework --> Contoso%20Test%20Framework
+  - name: LocalProjectName
+    value: PowerAppsTestAutomation
+
+  steps:
+  - checkout: self
+  - checkout: PowerAppsTestAutomation
+  #- template: localsteps.yml # Provide optional local YAML template here
+  - template: frameworksteps.yml@PowerAppsTestAutomation
+    parameters:
+      OnlineUsername: $(OnlineUsername)
+      OnlinePassword: $(OnlinePassword)
+      OnlineUrl: $(PortalUrl)
+      BrowserType: ${{ parameters.BrowserType }}
+      # File location format is /s/TeamProjectName/FilePathToTestAutomationURLs.json
+      TestAutomationURLFilePath: $(Build.SourcesDirectory)\$(LocalProjectName)\Samples\$(TestUrlFileName)
+      UsePrivateMode: $(PrivateMode)

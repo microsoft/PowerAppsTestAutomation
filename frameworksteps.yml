@@ -3,8 +3,7 @@
 parameters:
     OnlineUsername: ''
     OnlinePassword: ''
-    BrowserTypeFirefox: ''
-    BrowserTypeChrome: ''
+    BrowserType: ''
     OnlineUrl: ''
     TestAutomationURLFilePath: ''
     UsePrivateMode: ''
@@ -47,8 +46,8 @@ steps:
 
     - task: VSTest@2
 
-      displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }}'
-
+      displayName: 'Run Power Apps Test Automation Tests via Chrome'
+      condition: or(eq('${{ parameters.BrowserType }}', 'Chrome'), eq('${{ parameters.BrowserType }}', 'All'))
       inputs:
 
         testAssemblyVer2: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
@@ -59,9 +58,9 @@ steps:
 
         runSettingsFile: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings'
 
-        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType ${{ parameters.BrowserTypeChrome }} -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(ChromeWebDriver)'
+        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Chrome" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(ChromeWebDriver)'
 
-        testRunTitle: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeChrome }}'
+        testRunTitle: 'Run Power Apps Test Automation Tests via Chrome'
 
       continueOnError: true
 
@@ -69,8 +68,8 @@ steps:
 
     - task: VSTest@2
 
-      displayName: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeFirefox }}'
-
+      displayName: 'Run Power Apps Test Automation Tests via Firefox'
+      condition: or(eq('${{ parameters.BrowserType }}', 'Firefox'), eq('${{ parameters.BrowserType }}', 'All'))
       inputs:
 
         testAssemblyVer2: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests\bin\Debug\Microsoft.PowerApps.TestAutomation.Tests.dll'
@@ -81,8 +80,8 @@ steps:
 
         runSettingsFile: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings'
 
-        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType ${{ parameters.BrowserTypeFirefox }} -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(GeckoWebDriver)'
+        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Firefox" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(GeckoWebDriver)'
 
-        testRunTitle: 'Run Power Apps Test Automation Tests via ${{ parameters.BrowserTypeFirefox }}'
+        testRunTitle: 'Run Power Apps Test Automation Tests via Firefox'
 
       continueOnError: true
