@@ -55,11 +55,12 @@ namespace Microsoft.PowerApps.TestAutomation.Api
 
         public BrowserCommandResult<LoginResult> Login(Uri uri)
         {
-            if (this.Browser.Options.Credentials.IsDefault)
-                throw new InvalidOperationException("The default login method cannot be invoked without first setting credentials on the Browser object.");
-
-            return this.Execute(GetOptions("Login"), this.Login, uri, this.Browser.Options.Credentials.Username, this.Browser.Options.Credentials.Password, default(Action<LoginRedirectEventArgs>));
+            if (this.Browser.Options.Credentials.Username == null)
+                return PassThroughLogin(uri);
+            else // Local Testing Scenario
+                return this.Execute(GetOptions("Login"), this.Login, uri, this.Browser.Options.Credentials.Username, this.Browser.Options.Credentials.Password, default(Action<LoginRedirectEventArgs>));
         }
+
         /// <summary>
         /// Login Page
         /// </summary>
@@ -91,107 +92,136 @@ namespace Microsoft.PowerApps.TestAutomation.Api
             // bool online = !(this.OnlineDomains != null && !this.OnlineDomains.Any(d => uri.Host.EndsWith(d)));
             driver.Navigate().GoToUrl(uri);
 
-            // if (online)
-            // {
-                if (driver.IsVisible(By.Id("use_another_account_link")))
-                    driver.ClickWhenAvailable(By.Id("use_another_account_link"));
+            if (driver.IsVisible(By.Id("use_another_account_link")))
+                driver.ClickWhenAvailable(By.Id("use_another_account_link"));
 
-                // Attempt to locate the UserId field
-                driver.WaitUntilAvailable(By.XPath(Elements.Xpath[Reference.Login.UserId]));            
-                driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.UserId]));
+            // Attempt to locate the UserId field
+            driver.WaitUntilAvailable(By.XPath(Elements.Xpath[Reference.Login.UserId]));
+            driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.UserId]));
 
-                var userIdFieldVisible = driver.IsVisible(By.XPath(Elements.Xpath[Reference.Login.UserId]));
-                Debug.WriteLine($"Value of userIdFieldVisible: {userIdFieldVisible}");
+            var userIdFieldVisible = driver.IsVisible(By.XPath(Elements.Xpath[Reference.Login.UserId]));
+            Debug.WriteLine($"Value of userIdFieldVisible: {userIdFieldVisible}");
 
-                if (userIdFieldVisible)
+            if (userIdFieldVisible)
+            {
+                Debug.WriteLine("UserID field is visible. Proceeding with login.");
+                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(username.ToUnsecureString());
+                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Tab);
+                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Enter);
+
+                Thread.Sleep(2000);
+
+                //If expecting redirect then wait for redirect to trigger
+                if (redirectAction != null)
                 {
-                    Debug.WriteLine("UserID field is visible. Proceeding with login.");
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(username.ToUnsecureString());
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Tab);
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Enter);
+                    //Wait for redirect to occur.
+                    Thread.Sleep(3000);
 
-                    Thread.Sleep(2000);
+                    redirectAction?.Invoke(new LoginRedirectEventArgs(username, password, driver));
 
-                    //If expecting redirect then wait for redirect to trigger
-                    if (redirectAction != null)
-                    {
-                        //Wait for redirect to occur.
-                        Thread.Sleep(3000);
-
-                        redirectAction?.Invoke(new LoginRedirectEventArgs(username, password, driver));
-
-                        redirect = true;
-                    }
-                    else
-                    {
-                        Thread.Sleep(1000);
-
-                        driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(password.ToUnsecureString());
-                        driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(Keys.Tab);
-                        driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).Submit();
-
-                        Thread.Sleep(1000);
-
-                        var staySignedInVisible = driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn]),new TimeSpan(0,0,5));
-
-                        if (staySignedInVisible)
-                        {
-                            driver.ClickWhenAvailable(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn]));
-                        }
-
-                        driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.MainPage])
-                            , new TimeSpan(0, 2, 0),
-                            e =>
-                            {
-                                try
-                                {
-                                    e.WaitUntilVisible(By.ClassName("apps-list"), new TimeSpan(0, 0, 30));
-                                }
-                                catch (Exception exc)
-                                {
-                                    Console.WriteLine("The Environment Picker did not return clickable");
-                                    throw new InvalidOperationException($"The Environment Picker did not return clickable: {exc}");
-                                }
-
-                                e.WaitForPageToLoad();
-                            },
-                            f =>
-                            {
-                                Console.WriteLine("Login.MainPage failed to load in 2 minutes.");
-                                throw new Exception("Login page failed.");
-                            });
-                    }
+                    redirect = true;
                 }
                 else
                 {
-                    Console.WriteLine("UserID field is not visible. This should indicate a previous main page load failure.");
-                    // This scenario should only be hit in the event of a login.microsoftonline.com failure, or a login retry authentication where an authentication token was already retrieved
+                    Thread.Sleep(1000);
+
+                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(password.ToUnsecureString());
+                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(Keys.Tab);
+                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).Submit();
+
+                    Thread.Sleep(1000);
+
+                    var staySignedInVisible = driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn]), new TimeSpan(0, 0, 5));
+
+                    if (staySignedInVisible)
+                    {
+                        driver.ClickWhenAvailable(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn]));
+                    }
+
                     driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.MainPage])
                         , new TimeSpan(0, 2, 0),
                         e =>
                         {
                             try
                             {
-                                e.WaitUntilClickable(By.ClassName("d365shell-c-groups-menu-toggle"), new TimeSpan(0, 0, 30));
-
+                                e.WaitUntilVisible(By.ClassName("apps-list"), new TimeSpan(0, 0, 30));
                             }
                             catch (Exception exc)
                             {
-                                Console.WriteLine("The Environment Picker did not return clickable");
-                                throw new InvalidOperationException($"The Environment Picker did not return clickable: {exc}");
+                                Console.WriteLine("The Maker Portal Apps List did not return visible.");
+                                throw new InvalidOperationException($"The Maker Portal Apps List did not return visible.: {exc}");
                             }
 
                             e.WaitForPageToLoad();
                         },
                         f =>
                         {
-                            Console.WriteLine("Login.MainPage failed to load in 2 minutes.");
-                            throw new Exception("Login page failed.");
+                            Console.WriteLine("Login.MainPage failed to load in 2 minutes using Cloud Identity Login.");
+                            throw new Exception("Login page failed using Cloud Identity Login.");
                         });
                 }
-            // }
+            }
+            else
+            {
+                Console.WriteLine("UserID field is not visible. This should indicate a previous main page load failure.");
+
+                // This scenario should only be hit in the event of a login.microsoftonline.com failure, or a login retry authentication where an authentication token was already retrieved
+                driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.MainPage])
+                    , new TimeSpan(0, 2, 0),
+                    e =>
+                    {
+                        try
+                        {
+                            e.WaitUntilVisible(By.ClassName("apps-list"), new TimeSpan(0, 0, 30));
+                        }
+                        catch (Exception exc)
+                        {
+                            Console.WriteLine("The Maker Portal Apps List did not return visible.");
+                            throw new InvalidOperationException($"The Maker Portal Apps List did not return visible.: {exc}");
+                        }
+
+                        e.WaitForPageToLoad();
+                    },
+                    f =>
+                    {
+                        Console.WriteLine("Login.MainPage failed to load in 2 minutes on login retry.");
+                        throw new Exception("Login page failed on login retry.");
+                    });
+            }
 
             return redirect ? LoginResult.Redirect : LoginResult.Success;
+        }
+
+        internal BrowserCommandResult<LoginResult> PassThroughLogin(Uri uri)
+        {
+            return this.Execute(GetOptions("Pass Through Login"), driver =>
+            {
+                driver.Navigate().GoToUrl(uri);
+
+                driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.MainPage])
+                                    , new TimeSpan(0, 3, 0),
+                                    e =>
+                                    {
+                                        try
+                                        {
+                                            e.WaitUntilVisible(By.ClassName("apps-list"), new TimeSpan(0, 0, 30));
+                                        }
+                                        catch (Exception exc)
+                                        {
+                                            Console.WriteLine("The Maker Portal Apps List did not return visible.");
+                                            throw new InvalidOperationException($"The Maker Portal Apps List did not return visible.: {exc}");
+                                        }
+
+                                        e.WaitForPageToLoad();
+                                    },
+                                    f =>
+                                    {
+                                        Console.WriteLine("Login.MainPage failed to load in 2 minutes using PassThrough login.");
+                                        throw new Exception("Login page failed using PassThrough login.");
+                                    });
+
+                return LoginResult.Success;
+            });
         }
     }
 }
