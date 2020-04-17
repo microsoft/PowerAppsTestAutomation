@@ -156,8 +156,8 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                         },
                         f =>
                         {
-                            Console.WriteLine("Login.MainPage failed to load in 2 minutes.");
-                            throw new Exception("Login page failed.");
+                            Console.WriteLine("Login.MainPage failed to load in 2 minutes using Cloud Identity Login.");
+                            throw new Exception("Login page failed using Cloud Identity Login.");
                         });
                 }
             }
@@ -184,8 +184,8 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                     },
                     f =>
                     {
-                        Console.WriteLine("Login.MainPage failed to load in 2 minutes.");
-                        throw new Exception("Login page failed.");
+                        Console.WriteLine("Login.MainPage failed to load in 2 minutes on login retry.");
+                        throw new Exception("Login page failed on login retry.");
                     });
             }
 
@@ -216,8 +216,8 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                                     },
                                     f =>
                                     {
-                                        Console.WriteLine("Login.MainPage failed to load in 2 minutes.");
-                                        throw new Exception("Login page failed.");
+                                        Console.WriteLine("Login.MainPage failed to load in 2 minutes using PassThrough login.");
+                                        throw new Exception("Login page failed using PassThrough login.");
                                     });
 
                 return LoginResult.Success;
