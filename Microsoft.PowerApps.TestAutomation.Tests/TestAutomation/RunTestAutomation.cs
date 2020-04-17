@@ -225,6 +225,9 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
 
         public void FederatedLoginAction(LoginRedirectEventArgs args)
         {
+            if (args.Driver == null || args.Username == null || args.Password == null)
+                throw new Exception("Error. Unexpected null argument.");
+
             // Login Page details go here.  
             // You will need to find out the id of the password field on the form as well as the submit button. 
             // You will also need to add a reference to the Selenium Webdriver to use the base driver. 
