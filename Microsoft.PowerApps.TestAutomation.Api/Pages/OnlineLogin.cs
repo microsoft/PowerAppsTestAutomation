@@ -149,8 +149,8 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                                 }
                                 catch (Exception exc)
                                 {
-                                    Console.WriteLine("The Environment Picker did not return clickable");
-                                    throw new InvalidOperationException($"The Environment Picker did not return clickable: {exc}");
+                                    Console.WriteLine("The Maker Portal Apps List did not return visible.");
+                                    throw new InvalidOperationException($"The Maker Portal Apps List did not return visible.: {exc}");
                                 }
 
                                 e.WaitForPageToLoad();

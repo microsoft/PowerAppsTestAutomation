@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using OpenQA.Selenium;
 
 namespace Microsoft.PowerApps.TestAutomation.Tests
 {
@@ -19,6 +20,7 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
         private static BrowserType _browserType;
         private static Uri _xrmUri;
         private static Uri _testAutomationUri;
+        private static string _loginMethod;
         private static string _resultsDirectory = "";
         private static string _driversPath = "";
         private static string _usePrivateMode;
@@ -40,6 +42,7 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
             _username = _testContext.Properties["OnlineUsername"].ToString();
             _password = _testContext.Properties["OnlinePassword"].ToString();
             _xrmUri = new Uri(_testContext.Properties["OnlineUrl"].ToString());
+            _loginMethod = _testContext.Properties["LoginMethod"].ToString();
             _resultsDirectory = _testContext.Properties["ResultsDirectory"].ToString();
             _browserType = (BrowserType)Enum.Parse(typeof(BrowserType), _testContext.Properties["BrowserType"].ToString());
             _driversPath = _testContext.Properties["DriversPath"].ToString();
@@ -84,8 +87,33 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
                             {
                                 try
                                 {
-                                    appBrowser.OnlineLogin.Login(_xrmUri, _username.ToSecureString(), _password.ToSecureString());
-                                    break;
+                                    // See Authentication Types: https://docs.microsoft.com/en-us/office365/servicedescriptions/office-365-platform-service-description/user-account-management#authentication
+                                    // CloudIdentity uses standard Office 365 sign-in service
+                                    if (_loginMethod == "CloudIdentity")
+                                    {
+                                        appBrowser.OnlineLogin.Login(_xrmUri, _username.ToSecureString(), _password.ToSecureString());
+                                        break;
+                                    }
+                                    // FederatedIdentity uses AD FS 2.0 or other Security Token Services
+                                    else if (_loginMethod == "FederatedIdentity")
+                                    {
+                                        // Do Federated Login
+                                        appBrowser.OnlineLogin.Login(_xrmUri, _username.ToSecureString(), _password.ToSecureString(), FederatedLoginAction);
+                                        break;
+                                    }
+                                    // FederatedIdentity scenario -- but DevOps agent is configured with SSO capability
+                                    else if (_loginMethod == "SSO")
+                                    {
+                                        //appBrowser.OnlineLogin.Login(_xrmUri, _username.ToSecureString());
+                                        break;
+                                    }
+                                    // Fallback to CloudIdentity experience if _loginMethod is not provided
+                                    else
+                                    {
+                                        appBrowser.OnlineLogin.Login(_xrmUri, _username.ToSecureString(), _password.ToSecureString());
+                                        break;
+                                    }
+
                                 }
                                 catch (Exception exc)
                                 {
@@ -193,6 +221,45 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
                 }
                 
             }
-        }        
+        }
+
+        public void FederatedLoginAction(LoginRedirectEventArgs args)
+
+        {
+            // Login Page details go here.  
+            // You will need to find out the id of the password field on the form as well as the submit button. 
+            // You will also need to add a reference to the Selenium Webdriver to use the base driver. 
+            // Example
+
+            var driver = args.Driver;
+
+            driver.FindElement(By.Id("passwordInput")).SendKeys(args.Password.ToUnsecureString());
+            driver.ClickWhenAvailable(By.Id("submitButton"), TimeSpan.FromSeconds(2));
+
+            //Insert any additional code as required for the SSO scenario
+
+            //Wait for Maker Portal Page to load
+            driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.MainPage])
+                                        , new TimeSpan(0, 2, 0),
+                                        e =>
+                                        {
+                                            try
+                                            {
+                                                e.WaitUntilVisible(By.ClassName("apps-list"), new TimeSpan(0, 0, 30));
+                                            }
+                                            catch (Exception exc)
+                                            {
+                                                Console.WriteLine("The Maker Portal Apps List did not return visible.");
+                                                throw new InvalidOperationException($"The Maker Portal Apps List did not return visible.: {exc}");
+                                            }
+
+                                            e.WaitForPageToLoad();
+                                        },
+                                        f =>
+                                        {
+                                            Console.WriteLine("Login.MainPage failed to load in 2 minutes.");
+                                            throw new Exception("Login page failed.");
+                                        });
+        }
     }
 }
