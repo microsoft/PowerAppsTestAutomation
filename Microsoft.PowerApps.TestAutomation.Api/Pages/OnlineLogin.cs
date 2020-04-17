@@ -223,5 +223,50 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                 return LoginResult.Success;
             });
         }
+
+        public void FederatedLoginAction(LoginRedirectEventArgs args)
+        {
+            if (args.Driver == null || args.Username == null || args.Password == null)
+                throw new Exception("Error. Unexpected null argument.");
+
+            // Login Page details go here.  
+            // You will need to find out the id of the password field on the form as well as the submit button. 
+            // You will also need to add a reference to the Selenium Webdriver to use the base driver. 
+            // Example
+
+            var driver = args.Driver;
+
+            var passwordInput = driver.WaitUntilAvailable(By.Id("passwordInput"));
+            passwordInput.SendKeys(args.Password.ToUnsecureString());
+
+            driver.ClickWhenAvailable(By.Id("submitButton"), TimeSpan.FromSeconds(5));
+
+            // Insert any additional code as required for the SSO scenario
+
+
+            // Wait for Maker Portal Page to load
+            driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.MainPage])
+                , new TimeSpan(0, 2, 0),
+                e =>
+                {
+                    try
+                    {
+                        e.WaitUntilVisible(By.ClassName("apps-list"), new TimeSpan(0, 0, 30));
+                    }
+                    catch (Exception exc)
+                    {
+                        Console.WriteLine("The Maker Portal Apps List did not return visible.");
+                        throw new InvalidOperationException($"The Maker Portal Apps List did not return visible.: {exc}");
+                    }
+
+                    e.WaitForPageToLoad();
+                },
+                f =>
+                {
+                    Console.WriteLine("Login.MainPage failed to load in 2 minutes using Federated Identity Login.");
+                    throw new Exception("Login page failed using Federated Identity Login.");
+                });
+        }
+
     }
 }
