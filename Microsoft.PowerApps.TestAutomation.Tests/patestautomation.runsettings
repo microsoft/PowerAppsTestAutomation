@@ -44,7 +44,7 @@
     <Parameter name="OnlinePassword" value="" />
     <!-- OnlineUrl (https://make.powerapps.com , https://make.preview.powerapps.com) -->
     <Parameter name="OnlineUrl" value=""  />
-    <!-- CloudIdentity,FederatedIdentity,SSO -->
+    <!-- CloudIdentity,FederatedIdentity,PassThrough -->
     <Parameter name="LoginMethod" value=""  />
     <!-- Chrome,Firefox -->
     <Parameter name="BrowserType" value="Chrome" />

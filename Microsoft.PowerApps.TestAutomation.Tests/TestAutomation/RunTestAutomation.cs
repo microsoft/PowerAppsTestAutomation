@@ -102,9 +102,9 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
                                         break;
                                     }
                                     // FederatedIdentity scenario -- but DevOps agent is configured with SSO capability
-                                    else if (_loginMethod == "SSO")
+                                    else if (_loginMethod == "PassThrough")
                                     {
-                                        //appBrowser.OnlineLogin.Login(_xrmUri, _username.ToSecureString());
+                                        appBrowser.OnlineLogin.Login(_xrmUri);
                                         break;
                                     }
                                     // Fallback to CloudIdentity experience if _loginMethod is not provided
@@ -224,7 +224,6 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
         }
 
         public void FederatedLoginAction(LoginRedirectEventArgs args)
-
         {
             // Login Page details go here.  
             // You will need to find out the id of the password field on the form as well as the submit button. 
@@ -233,8 +232,10 @@ namespace Microsoft.PowerApps.TestAutomation.Tests
 
             var driver = args.Driver;
 
-            driver.FindElement(By.Id("passwordInput")).SendKeys(args.Password.ToUnsecureString());
-            driver.ClickWhenAvailable(By.Id("submitButton"), TimeSpan.FromSeconds(2));
+            var passwordInput = driver.WaitUntilAvailable(By.Id("passwordInput"));
+            passwordInput.SendKeys(args.Password.ToUnsecureString());
+
+            driver.ClickWhenAvailable(By.Id("submitButton"), TimeSpan.FromSeconds(5));
 
             //Insert any additional code as required for the SSO scenario
 

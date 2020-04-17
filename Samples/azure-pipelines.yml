@@ -38,7 +38,7 @@ parameters:
    values:
    - CloudIdentity # Uses the default Office 365 Sign-In Service for authentication
    - FederatedIdentity # Uses a Custom Login Action method using AD FS 2.0 or other Security Token Services for authentication. Custom code is required.
-   - SSO # Federated login scenario where the provided user credential is automatically logged in, requires special agent configurations
+   - PassThrough # Federated login scenario where the provided user credential is automatically logged in, requires special agent configurations
 
 jobs:
 - job: "PowerAppsTestFrameworkAutomation"
