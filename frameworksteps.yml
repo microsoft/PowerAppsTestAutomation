@@ -59,7 +59,7 @@ steps:
 
         runSettingsFile: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings'
 
-        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Chrome" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(ChromeWebDriver)' -LoginMethod ${{ parameters.LoginMethod }}
+        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Chrome" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(ChromeWebDriver) -LoginMethod ${{ parameters.LoginMethod }}'
 
         testRunTitle: 'Run Power Apps Test Automation Tests via Chrome'
 
@@ -81,7 +81,7 @@ steps:
 
         runSettingsFile: '${{parameters.RepositoryName}}\Microsoft.PowerApps.TestAutomation.Tests/patestautomation.runsettings'
 
-        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Firefox" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(GeckoWebDriver)' -LoginMethod ${{ parameters.LoginMethod }}
+        overrideTestrunParameters: '-OnlineUsername ${{ parameters.OnlineUsername }} -OnlinePassword ${{ parameters.OnlinePassword }} -BrowserType "Firefox" -OnlineUrl ${{ parameters.OnlineUrl }} -UsePrivateMode ${{ parameters.UsePrivateMode }} -TestAutomationURLFilePath ${{ parameters.TestAutomationURLFilePath }} -DriversPath $(GeckoWebDriver) -LoginMethod ${{ parameters.LoginMethod }}'
 
         testRunTitle: 'Run Power Apps Test Automation Tests via Firefox'
 
