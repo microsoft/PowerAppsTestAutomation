@@ -4,7 +4,7 @@ name: PowerAppsTestAutomation-$(date:yyyyMMdd)$(rev:.r)
 
 resources:
   repositories:
-    - repository: PowerAppsTestAutomation
+    - repository: Test Studio Pipeline
       type: github
       # GitHub Repo(e.g. <FORK>/PowerAppsTestAutomation)
       # Recommended to Fork or Duplicate if custom auth flows are required
