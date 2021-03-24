@@ -60,7 +60,7 @@ jobs:
     # Project name of repo containing TestAutomationURLs (spaces should be encoded as %20)
     # Example: Contoso Test Framework --> Contoso%20Test%20Framework
   - name: LocalProjectName
-    value: Retail Power Platform - Git
+    value: MarksAndSpencerRetail
 
   steps:
   - checkout: self
