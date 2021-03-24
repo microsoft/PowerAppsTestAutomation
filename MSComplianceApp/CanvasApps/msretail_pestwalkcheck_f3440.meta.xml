@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>msretail_pestwalkcheck_f3440</Name>
+  <AppVersion>2021-03-24T04:23:05Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.21032.45.0</CreatedByClientVersion>
+  <MinClientVersion>0.0.0.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"640","primaryDeviceHeight":"1136","sienaVersion":"20210323T120406Z-3.21032.45.0","deviceCapabilities":"","supportsPortrait":"true","supportsLandscape":"false","primaryFormFactor":"Phone","publisherVersion":"3.21032.45","minimumRequiredApiVersion":"2.2.0","hasComponent":"true","hasUnlockedComponent":"true","isUnifiedRootApp":"false"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>rgba(0, 176, 240, 1)</BackgroundColor>
+  <DisplayName>Pest Walk Check</DisplayName>
+  <Description xsi:nil="true"></Description>
+  <CommitMessage>Saved by Test Studio</CommitMessage>
+  <Publisher xsi:nil="true"></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{"5e07d2ed-c4be-423e-90e9-30cb8d2f9a96":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1451/1.0.1451.2361/sharepointonline/icon.png","dataSources":["MnSStores","Questions Master","Store PEST Check Actions","Store PEST Checks","MnSStores OfficeGroups and Teams Data","MnSStores_LookupUse","PEST Responses"],"dependencies":[],"dependents":[],"parameterHints":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://mnscorp.sharepoint.com/sites/StoresHelpDeskDev":{"dataSources":{"Questions Master":{"tableName":"835c6556-59db-40c4-a8c9-c2d586d2fbcf"},"Store PEST Check Actions":{"tableName":"da892afe-6a46-4b3e-b1b0-0d86bd67961c"},"Store PEST Checks":{"tableName":"b6dc3400-1d3c-4c03-9328-9dedb2cc08c5"}}}},"apiTier":"Standard"},"670eb27b-365f-49c5-989f-48467fd479ed":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1451/1.0.1451.2361/sharepointonline/icon.png","dataSources":["MnSStores","MnSStores OfficeGroups and Teams Data","MnSStores_LookupUse"],"dependencies":[],"dependents":[],"parameterHints":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://mnscorp.sharepoint.com/sites/MWS/forms":{"dataSources":{"MnSStores":{"tableName":"634bfa12-26ab-442d-8362-4e2e88a6494b"},"MnSStores OfficeGroups and Teams Data":{"tableName":"336c5cd5-d847-45e6-b54e-6de885a3a355"},"MnSStores_LookupUse":{"tableName":"673453fd-eb43-4812-bd53-a4c1e47069c6"}}}},"apiTier":"Standard"},"afc07343-7270-425b-b185-5b62dc530549":{"id":"/providers/microsoft.powerapps/apis/shared_sharepointonline","displayName":"SharePoint","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1451/1.0.1451.2361/sharepointonline/icon.png","dataSources":["PEST Responses"],"dependencies":[],"dependents":[],"parameterHints":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{"https://mnscorp.sharepoint.com/sites/StoresHelpDeskDev":{"dataSources":{"PEST Responses":{"tableName":"993ad2f0-9d9f-4333-bd19-60ebced5e112"}}}},"apiTier":"Standard"},"32689f8e-ffca-4174-b68b-79c228bccd8d":{"id":"/providers/microsoft.powerapps/apis/shared_office365users","displayName":"Office 365 Users","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1430/1.0.1430.2296/office365users/icon.png","dataSources":["Office365Users"],"dependencies":[],"dependents":[],"parameterHints":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard"},"0529d076-c52d-4754-8b91-1309d4a4ad28":{"id":"/providers/microsoft.powerapps/apis/shared_office365groups","displayName":"Office 365 Groups","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1445/1.0.1445.2347/office365groups/icon.png","dataSources":["Office365Groups"],"dependencies":[],"dependents":[],"parameterHints":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard"}}</ConnectionReferences>
+  <DatabaseReferences>{}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>0</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <AdminControlBypassConsent>0</AdminControlBypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/msretail_pestwalkcheck_f3440_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/msretail_pestwalkcheck_f3440_DocumentUri.msapp</DocumentUri>
+</CanvasApp>
