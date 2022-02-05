@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 
 using Microsoft.PowerApps.TestAutomation.Browser;
-using OpenQA.Selenium;
 using Newtonsoft.Json.Linq;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -88,6 +88,7 @@ namespace Microsoft.PowerApps.TestAutomation.Api
             public string TestCaseId { get; set; }
             public string TestCaseName { get; set; }
             public string TestCaseDescription { get; set; }
+            public string TestFailureMessage { get; set; }
             public long StartTime { get; set; }
             public long EndTime { get; set; }
             public bool Success { get; set; }
@@ -165,7 +166,7 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                 {
                     passCount = 0;
                     failCount = 1;
-                    
+
                 }
 
                 // Calculate Total Execution Time
@@ -175,18 +176,19 @@ namespace Microsoft.PowerApps.TestAutomation.Api
                 var testCaseResult = testCaseResults.Success ? "Pass" : "Fail";
 
                 // Output results to Console
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"TestSuite Name: {testCaseResults.TestSuiteName} with ID {testCaseResults.TestSuiteId}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"TestSuite Description: {testCaseResults.TestSuiteDescription}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"TestCase Name: {testCaseResults.TestCaseName} with ID {testCaseResults.TestCaseId}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"TestCase Description: {testCaseResults.TestCaseDescription}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"Test Case Result: {testCaseResult}");
-                //Console.WriteLine($"Tests Failed: {testCaseResults.TestsPassed}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
+                    $"Test Case Failure Message: {testCaseResults.TestFailureMessage}");
+                Console.WriteLine("\t" +
                     $"Test Case execution time: {testCaseElapsedTime}");
 
             }
@@ -201,20 +203,20 @@ namespace Microsoft.PowerApps.TestAutomation.Api
 
                 // Calculate Total Execution Time
                 int testSuiteElapsedMs = (int)(testSuiteResults.EndTime - testSuiteResults.StartTime);
-                TimeSpan testSuiteElapsedTime = new TimeSpan(0,0,0,0, testSuiteElapsedMs);
-            
+                TimeSpan testSuiteElapsedTime = new TimeSpan(0, 0, 0, 0, testSuiteElapsedMs);
+
                 // Output results to Console
-                Console.WriteLine("\t"+ 
+                Console.WriteLine("\t" +
                     $"TestSuite Name: {testSuiteResults.TestSuiteName} with ID {testSuiteResults.TestSuiteId}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"TestSuite Description: {testSuiteResults.TestSuiteDescription}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"Total Tests: {testSuiteCount}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"Tests Passed: {testSuiteResults.TestsPassed}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"Tests Failed: {testSuiteResults.TestsPassed}");
-                Console.WriteLine("\t" + 
+                Console.WriteLine("\t" +
                     $"TestSuite execution time: {testSuiteElapsedTime}");
 
             }
