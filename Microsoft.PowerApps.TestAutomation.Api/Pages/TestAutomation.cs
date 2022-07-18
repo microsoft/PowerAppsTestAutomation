@@ -32,13 +32,15 @@ namespace Microsoft.PowerApps.TestAutomation.Api
             return this.Execute(GetOptions("Execute Test Automation"), driver =>
             {
                 // Navigate to TestSuite or TestCase URL
-                var sessionId = InitiateTest(driver, uri);
-
-                Debug.WriteLineIf(sessionId != null, $"Session ID for Test Run #{testRunNumber} is: {sessionId}");
-                Debug.WriteLineIf(sessionId == null, $"Session ID for Test Run #{testRunNumber} is NULL");
+                InitiateTest(driver, uri);
 
                 // Check for existence of permissions dialog (1st test load for user)
                 CheckForPermissionDialog(driver);
+
+                // Try to report the sessionId. There is a bit of a race condition here,
+                // so don't do this too close to fullscreen-app-host visibility or it 
+                // will fail to find Core or some other namespace.
+                TryReportSessionId(driver, testRunNumber);
 
                 // Wait for test completion and collect results
                 JObject testResults = WaitForTestResults(driver, maxWaitTimeInSeconds);
@@ -129,7 +131,7 @@ namespace Microsoft.PowerApps.TestAutomation.Api
             return jsonResultString;
         }
 
-        internal string InitiateTest(IWebDriver driver, Uri uri)
+        internal void InitiateTest(IWebDriver driver, Uri uri)
         {
             driver.Navigate().GoToUrl(uri);
 
@@ -138,10 +140,14 @@ namespace Microsoft.PowerApps.TestAutomation.Api
 
             // Wait for fullscreen-app-host
             driver.WaitUntilVisible(By.Id("fullscreen-app-host"));
-
-            string sessionId = (string)driver.ExecuteScript("return Core.Telemetry.Log.sessionId");
-
-            return sessionId;
+            if (driver.IsVisible(By.Id("fullscreen-app-host")))
+            {
+                Debug.WriteLine("fullscreen-app-host is visible.");
+            }
+            else
+            {
+                Debug.WriteLine("fullscreen-app-host is not visible.");
+            }
         }
 
         public Tuple<int, int> ReportResultsToDevOps(JObject jObject, int testRunNumber)
@@ -223,6 +229,23 @@ namespace Microsoft.PowerApps.TestAutomation.Api
 
             var countPassFailResult = Tuple.Create(passCount, failCount);
             return countPassFailResult;
+        }
+
+        private void TryReportSessionId(IWebDriver driver, int testRunNumber)
+        {
+            string sessionId;
+            try
+            {
+                sessionId = (string)driver.ExecuteScript("return Core.Telemetry.Log.sessionId");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Exception getting sessionId: {e.Message}");
+                sessionId = null;
+            }
+
+            Debug.WriteLineIf(sessionId != null, $"Session ID for Test Run #{testRunNumber} is: {sessionId}");
+            Debug.WriteLineIf(sessionId == null, $"Session ID for Test Run #{testRunNumber} is NULL");
         }
     }
 }
