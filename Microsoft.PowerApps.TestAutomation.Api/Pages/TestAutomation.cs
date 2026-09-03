@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Microsoft.PowerApps.TestAutomation.Api
 {
@@ -150,6 +151,50 @@ namespace Microsoft.PowerApps.TestAutomation.Api
             }
         }
 
+        /// <summary>
+        /// Normalizes text that originates from the app under test before it is written to
+        /// standard output.
+        /// </summary>
+        /// <remarks>
+        /// Test suite and test case names, descriptions and failure messages are supplied by the
+        /// app being tested rather than by the pipeline that runs it. Build agents interpret the
+        /// console stream line by line, so these values are flattened to a single line before they
+        /// are logged and cannot affect how surrounding output is parsed.
+        /// </remarks>
+        /// <param name="value">The value to normalize.</param>
+        /// <returns>A single-line representation of <paramref name="value"/>.</returns>
+        public static string SanitizeForLog(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+
+            var sanitized = new StringBuilder(value.Length);
+            char previous = '\0';
+
+            foreach (char character in value)
+            {
+                // char.IsControl already covers CR, LF and NEL (U+0085). The Unicode line and
+                // paragraph separators sit outside that range, so they are named explicitly.
+                char current = char.IsControl(character) || character == '\u2028' || character == '\u2029'
+                    ? ' '
+                    : character;
+
+                // Keep consecutive '#' characters apart so they cannot form a marker, for runs
+                // of any length.
+                if (current == '#' && previous == '#')
+                {
+                    sanitized.Append(' ');
+                }
+
+                sanitized.Append(current);
+                previous = current;
+            }
+
+            return sanitized.ToString();
+        }
+
         public Tuple<int, int> ReportResultsToDevOps(JObject jObject, int testRunNumber)
         {
             var testExecutionMode = (int)jObject.GetValue("ExecutionMode");
@@ -183,17 +228,17 @@ namespace Microsoft.PowerApps.TestAutomation.Api
 
                 // Output results to Console
                 Console.WriteLine("\t" +
-                    $"TestSuite Name: {testCaseResults.TestSuiteName} with ID {testCaseResults.TestSuiteId}");
+                    $"TestSuite Name: {SanitizeForLog(testCaseResults.TestSuiteName)} with ID {SanitizeForLog(testCaseResults.TestSuiteId)}");
                 Console.WriteLine("\t" +
-                    $"TestSuite Description: {testCaseResults.TestSuiteDescription}");
+                    $"TestSuite Description: {SanitizeForLog(testCaseResults.TestSuiteDescription)}");
                 Console.WriteLine("\t" +
-                    $"TestCase Name: {testCaseResults.TestCaseName} with ID {testCaseResults.TestCaseId}");
+                    $"TestCase Name: {SanitizeForLog(testCaseResults.TestCaseName)} with ID {SanitizeForLog(testCaseResults.TestCaseId)}");
                 Console.WriteLine("\t" +
-                    $"TestCase Description: {testCaseResults.TestCaseDescription}");
+                    $"TestCase Description: {SanitizeForLog(testCaseResults.TestCaseDescription)}");
                 Console.WriteLine("\t" +
                     $"Test Case Result: {testCaseResult}");
                 Console.WriteLine("\t" +
-                    $"Test Case Failure Message: {testCaseResults.TestFailureMessage}");
+                    $"Test Case Failure Message: {SanitizeForLog(testCaseResults.TestFailureMessage)}");
                 Console.WriteLine("\t" +
                     $"Test Case execution time: {testCaseElapsedTime}");
 
@@ -213,15 +258,15 @@ namespace Microsoft.PowerApps.TestAutomation.Api
 
                 // Output results to Console
                 Console.WriteLine("\t" +
-                    $"TestSuite Name: {testSuiteResults.TestSuiteName} with ID {testSuiteResults.TestSuiteId}");
+                    $"TestSuite Name: {SanitizeForLog(testSuiteResults.TestSuiteName)} with ID {SanitizeForLog(testSuiteResults.TestSuiteId)}");
                 Console.WriteLine("\t" +
-                    $"TestSuite Description: {testSuiteResults.TestSuiteDescription}");
+                    $"TestSuite Description: {SanitizeForLog(testSuiteResults.TestSuiteDescription)}");
                 Console.WriteLine("\t" +
                     $"Total Tests: {testSuiteCount}");
                 Console.WriteLine("\t" +
                     $"Tests Passed: {testSuiteResults.TestsPassed}");
                 Console.WriteLine("\t" +
-                    $"Tests Failed: {testSuiteResults.TestsPassed}");
+                    $"Tests Failed: {testSuiteResults.TestsFailed}");
                 Console.WriteLine("\t" +
                     $"TestSuite execution time: {testSuiteElapsedTime}");
 
